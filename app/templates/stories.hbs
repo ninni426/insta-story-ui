@@ -1,0 +1,12 @@
+{{partial "header"}}
+<div class="container">            
+    <div class="row">
+        <div class="col-sm-12">
+            {{#if model}}
+                {{story-slide
+                    story_data = model.data
+                }}
+            {{/if}}
+        </div>
+    </div>
+</div>
