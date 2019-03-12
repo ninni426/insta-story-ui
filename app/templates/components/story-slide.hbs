@@ -1,52 +1,32 @@
-{{!-- <img class="d-block w-100 h-100" src={{story.images.fixed_height.url}} {{action "stopAutoPlay" story}}> --}}
-<main role="main">
-<div class="floating-panel">
-    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        {{#each-in story_data as |index story|}}
-            <div class={{if (eq index '0') "carousel-item active" "carousel-item"}}>
-                <video id="gifID" loop muted playsinline controls src={{story.images.original_mp4.mp4}} poster={{story.images.original_still.url}} {{action "stopAutoPlay" story}}>
-                </video>
-            </div>
-        {{/each-in}}
-    </div>
-    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-    </div>
-</div> 
-<footer class="container">
-        <p class="float-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2017-2018 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-</footer>
-</main>
-{{!-- <main role="main">
-   <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        {{#each-in story_data as |index story|}}
-            <div class={{if (eq index '0') "carousel-item active" "carousel-item"}}>
-                
-                <img class="d-block w-100" src="..." {{action "stopAutoPlay" story}}>
-            </div>
-        {{/each-in}}
-    </div>
-    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-    </div>
+<header>
+    <nav class={{if toggle_display "navbar navbar-expand-md navbar-dark fixed-top bg-dark" "navbar navbar-expand-md navbar-light bg-light fixed-top"}}>
+        <a class="navbar-brand" href="">Stories</a>
+        <label class="switch">
+            {{input type="checkbox" checked=toggle_view}}
+            <span class="slider round"></span>
+        </label>
+    </nav>
+</header>
 
-    <footer class="container">
-        <p class="float-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2017-2018 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-    </footer>
-</main>  --}}
+<main role="main">
+    <div class="container floating-panel">
+        <div id="carouselID" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            {{#each-in story_data as |index story|}}
+                <div class={{if (eq index '0') "carousel-item video-div active" "carousel-item video-div"}}>
+                    <video id={{story.id}} loop muted playsinline autoplay src={{story.images.original_mp4.mp4}} poster={{story.images.original_still.url}} {{action "stopAutoPlay" story.id}}>
+                    </video>
+                </div>
+            {{/each-in}}
+        </div>
+        <a class="carousel-control-prev" href="#carouselID" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselID" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+        </div>
+    </div>
+</main>

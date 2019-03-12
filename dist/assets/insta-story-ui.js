@@ -25,13 +25,18 @@
     value: true
   });
   _exports.default = void 0;
+  const {
+    $,
+    computed
+  } = Ember;
+  const document = window.document;
 
   var _default = Ember.Component.extend({
     init() {
       this._super();
 
       this.setProperties({
-        carousel_pause: false
+        toggle_view: true
       });
     },
 
@@ -45,18 +50,28 @@
       });
     },
 
+    toggle_display: computed('toggle_view', function () {
+      const bg_color = this.get('toggle_view') ? "000" : "fff";
+      const text_color = this.get('toggle_view') ? "fff" : "000";
+      $('body').append(`<style type="text/css">body{background:#${bg_color};color:#${text_color}}</style>`);
+      return this.get('toggle_view');
+    }),
     actions: {
       /**
        * Starts/Stops the slide of GIF as stories.
        * Also pauses the GIF from display.
-       * @param {Object} - story - GIF data from  
+       * @param {String} - id - specific gif id
        */
-      stopAutoPlay(story) {
-        console.log(story);
-        this.toggleProperty('carousel_pause');
-        console.log(this.get('carousel_pause'));
-        const control_value = this.get('carousel_pause') ? 'pause' : 'cycle';
-        $('#carouselExampleControls').carousel(control_value);
+      stopAutoPlay(id) {
+        const myVideo = document.getElementById(id);
+
+        if (myVideo.paused) {
+          myVideo.play();
+          $('#carouselID').carousel('cycle');
+        } else {
+          myVideo.pause();
+          $('#carouselID').carousel('pause');
+        }
       }
 
     }
@@ -558,8 +573,33 @@
   });
   Router.map(function () {
     this.route('stories');
+    this.route('not-found', {
+      path: '/*path'
+    });
   });
   var _default = Router;
+  _exports.default = _default;
+});
+;define("insta-story-ui/routes/not-found", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+  const {
+    $
+  } = Ember;
+
+  var _default = Ember.Route.extend({
+    init() {
+      this._super();
+
+      $('body').append('<style type="text/css">body{background:#000;color:#fff}</style>');
+    }
+
+  });
+
   _exports.default = _default;
 });
 ;define("insta-story-ui/routes/stories", ["exports"], function (_exports) {
@@ -571,15 +611,12 @@
   _exports.default = void 0;
   const {
     run,
-    $,
-    RSVP
+    $
   } = Ember;
 
   var _default = Ember.Route.extend({
     model() {
-      console.log('model');
       const giffy_url = 'http://api.giphy.com/v1/gifs/trending?api_key=HavydXS9H2lPO3UOYtqf6SRT7C6sD0zQ';
-      console.log(giffy_url);
       return new Promise((response, reject) => {
         $.ajax({
           url: giffy_url,
@@ -587,37 +624,24 @@
           datatype: 'json',
           crossOrigin: true,
           context: this,
-          crossDomain: true,
           timeout: 60000
         }).done(resp => {
           run(() => {
-            console.log(resp);
             this.set('stories_data', resp.data);
             response(resp);
           });
         }).fail(resp => {
           run(() => {
-            console.log('throw error ' + resp);
+            console.log('error scenario');
+            this.transitionTo('/not-found');
             reject(resp);
-          });
-        }).always(() => {
-          run(() => {
-            console.log('if spinner close it');
           });
         });
       });
     },
 
-    afterModel(data) {
-      this.set('stories_data', !Ember.isEmpty(data.data));
-    },
-
     renderTemplate() {
-      if (this.get('stories_data')) {
-        return this.render();
-      } else {
-        console.log('else'); // return this.render('not-found');
-      }
+      this.render();
     }
 
   });
@@ -664,8 +688,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "WPySxBHZ",
-    "block": "{\"symbols\":[\"story\",\"index\"],\"statements\":[[7,\"main\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"id\",\"carouselExampleControls\"],[11,\"class\",\"carousel slide\"],[11,\"data-ride\",\"carousel\"],[9],[0,\"\\n        \"],[7,\"div\"],[11,\"class\",\"carousel-inner\"],[9],[0,\"\\n\"],[4,\"each\",[[27,\"-each-in\",[[23,[\"story_data\"]]],null]],null,{\"statements\":[[0,\"                \"],[7,\"div\"],[12,\"class\",[27,\"if\",[[27,\"eq\",[[22,2,[]],\"0\"],null],\"carousel-item active\",\"carousel-item\"],null]],[9],[0,\"\\n                    \"],[7,\"img\"],[11,\"class\",\"d-block w-100 h-100\"],[12,\"src\",[22,1,[\"images\",\"fixed_height\",\"url\"]]],[9],[3,\"action\",[[22,0,[]],\"stopAutoPlay\",[22,1,[]]]],[10],[0,\"\\n                \"],[10],[0,\"\\n\"]],\"parameters\":[1,2]},null],[0,\"        \"],[10],[0,\"\\n        \"],[7,\"a\"],[11,\"class\",\"carousel-control-prev\"],[11,\"href\",\"#carouselExampleControls\"],[11,\"role\",\"button\"],[11,\"data-slide\",\"prev\"],[9],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"carousel-control-prev-icon\"],[11,\"aria-hidden\",\"true\"],[9],[10],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"sr-only\"],[9],[0,\"Previous\"],[10],[0,\"\\n        \"],[10],[0,\"\\n        \"],[7,\"a\"],[11,\"class\",\"carousel-control-next\"],[11,\"href\",\"#carouselExampleControls\"],[11,\"role\",\"button\"],[11,\"data-slide\",\"next\"],[9],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"carousel-control-next-icon\"],[11,\"aria-hidden\",\"true\"],[9],[10],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"sr-only\"],[9],[0,\"Next\"],[10],[0,\"\\n        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n\"],[10]],\"hasEval\":false}",
+    "id": "gU1fmKXk",
+    "block": "{\"symbols\":[\"story\",\"index\"],\"statements\":[[7,\"header\"],[9],[0,\"\\n    \"],[7,\"nav\"],[12,\"class\",[27,\"if\",[[23,[\"toggle_display\"]],\"navbar navbar-expand-md navbar-dark fixed-top bg-dark\",\"navbar navbar-expand-md navbar-light bg-light fixed-top\"],null]],[9],[0,\"\\n        \"],[7,\"a\"],[11,\"class\",\"navbar-brand\"],[11,\"href\",\"\"],[9],[0,\"Stories\"],[10],[0,\"\\n        \"],[7,\"label\"],[11,\"class\",\"switch\"],[9],[0,\"\\n            \"],[1,[27,\"input\",null,[[\"type\",\"checked\"],[\"checkbox\",[23,[\"toggle_view\"]]]]],false],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"slider round\"],[9],[10],[0,\"\\n        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n\"],[10],[0,\"\\n\\n\"],[7,\"main\"],[11,\"role\",\"main\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"container floating-panel\"],[9],[0,\"\\n        \"],[7,\"div\"],[11,\"id\",\"carouselID\"],[11,\"class\",\"carousel slide\"],[11,\"data-ride\",\"carousel\"],[9],[0,\"\\n        \"],[7,\"div\"],[11,\"class\",\"carousel-inner\"],[9],[0,\"\\n\"],[4,\"each\",[[27,\"-each-in\",[[23,[\"story_data\"]]],null]],null,{\"statements\":[[0,\"                \"],[7,\"div\"],[12,\"class\",[27,\"if\",[[27,\"eq\",[[22,2,[]],\"0\"],null],\"carousel-item video-div active\",\"carousel-item video-div\"],null]],[9],[0,\"\\n                    \"],[7,\"video\"],[12,\"id\",[22,1,[\"id\"]]],[11,\"loop\",\"\"],[11,\"muted\",\"\"],[11,\"playsinline\",\"\"],[11,\"autoplay\",\"\"],[12,\"src\",[22,1,[\"images\",\"original_mp4\",\"mp4\"]]],[12,\"poster\",[22,1,[\"images\",\"original_still\",\"url\"]]],[9],[0,\"\\n                    \"],[3,\"action\",[[22,0,[]],\"stopAutoPlay\",[22,1,[\"id\"]]]],[10],[0,\"\\n                \"],[10],[0,\"\\n\"]],\"parameters\":[1,2]},null],[0,\"        \"],[10],[0,\"\\n        \"],[7,\"a\"],[11,\"class\",\"carousel-control-prev\"],[11,\"href\",\"#carouselID\"],[11,\"role\",\"button\"],[11,\"data-slide\",\"prev\"],[9],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"carousel-control-prev-icon\"],[11,\"aria-hidden\",\"true\"],[9],[10],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"sr-only\"],[9],[0,\"Previous\"],[10],[0,\"\\n        \"],[10],[0,\"\\n        \"],[7,\"a\"],[11,\"class\",\"carousel-control-next\"],[11,\"href\",\"#carouselID\"],[11,\"role\",\"button\"],[11,\"data-slide\",\"next\"],[9],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"carousel-control-next-icon\"],[11,\"aria-hidden\",\"true\"],[9],[10],[0,\"\\n            \"],[7,\"span\"],[11,\"class\",\"sr-only\"],[9],[0,\"Next\"],[10],[0,\"\\n        \"],[10],[0,\"\\n        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n\"],[10]],\"hasEval\":false}",
     "meta": {
       "moduleName": "insta-story-ui/templates/components/story-slide.hbs"
     }
@@ -673,7 +697,7 @@
 
   _exports.default = _default;
 });
-;define("insta-story-ui/templates/header", ["exports"], function (_exports) {
+;define("insta-story-ui/templates/not-found", ["exports"], function (_exports) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -682,10 +706,10 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "+mWvD3UL",
-    "block": "{\"symbols\":[],\"statements\":[[7,\"header\"],[9],[0,\"\\n\"],[0,\"        \"],[7,\"div\"],[11,\"class\",\"container bg-dark\"],[9],[0,\"\\n            \"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n            \"],[7,\"div\"],[11,\"class\",\"col-sm-12\"],[9],[0,\"\\n                \"],[7,\"h4\"],[11,\"class\",\"text-white\"],[9],[0,\"About\"],[10],[0,\"\\n            \"],[10],[0,\"\\n            \"],[10],[0,\"\\n        \"],[10],[0,\"\\n\"],[10]],\"hasEval\":false}",
+    "id": "oTX88/A1",
+    "block": "{\"symbols\":[],\"statements\":[[7,\"div\"],[11,\"class\",\"container\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n        \"],[7,\"h1\"],[9],[0,\" 404 \"],[10],[0,\"\\n    \"],[10],[0,\"\\n\"],[10]],\"hasEval\":false}",
     "meta": {
-      "moduleName": "insta-story-ui/templates/header.hbs"
+      "moduleName": "insta-story-ui/templates/not-found.hbs"
     }
   });
 
@@ -700,8 +724,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "/Xm+4qKh",
-    "block": "{\"symbols\":[],\"statements\":[[15,\"header\",[]],[0,\"\\n\"],[7,\"div\"],[11,\"class\",\"container\"],[9],[0,\"            \\n    \"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n        \"],[7,\"div\"],[11,\"class\",\"col-sm-12\"],[9],[0,\"\\n\"],[4,\"if\",[[23,[\"model\"]]],null,{\"statements\":[[0,\"                \"],[1,[27,\"story-slide\",null,[[\"story_data\"],[[23,[\"model\",\"data\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null],[0,\"        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n\"],[10],[0,\"\\n\"]],\"hasEval\":true}",
+    "id": "+q2a1bNb",
+    "block": "{\"symbols\":[],\"statements\":[[0,\"\\n\"],[4,\"if\",[[23,[\"model\"]]],null,{\"statements\":[[0,\"    \"],[1,[27,\"story-slide\",null,[[\"story_data\"],[[23,[\"model\",\"data\"]]]]],false],[0,\"\\n\"]],\"parameters\":[]},null]],\"hasEval\":false}",
     "meta": {
       "moduleName": "insta-story-ui/templates/stories.hbs"
     }

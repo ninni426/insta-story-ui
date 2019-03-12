@@ -1,25 +1,6 @@
-{{!-- 
-<div id="refresh_bmp_modal" class="modal fade in" role="dialog">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-body">
-				<br/>
-				<img src="https://cdn.dribbble.com/users/370267/screenshots/2949432/insta-stories-logo-30fps.gif" >
-				<br/>
-			</div>
-		</div>
-	</div>
-</div> --}}
 
-{{partial "header"}}
-{{!-- <div class="container">            
-    <div class="row">
-        <div class="col-sm-12"> --}}
-            {{#if model}}
-                {{story-slide 
-                    story_data = model.data
-                }}
-            {{/if}}
-        {{!-- </div>
-    </div>
-</div> --}}
+{{#if model}}
+    {{story-slide 
+        story_data = model.data
+    }}
+{{/if}}

@@ -1,11 +1,14 @@
+import Ember from 'ember';
 import Component from '@ember/component';
-const {$} = Ember;
+
+const {$, computed} = Ember;
 const document = window.document;
 export default Component.extend({
+
     init(){
         this._super();
         this.setProperties({
-            carousel_pause: false,
+            toggle_view: true,
         });
     },
 
@@ -19,30 +22,30 @@ export default Component.extend({
         });
     },
 
+
+	toggle_display: computed('toggle_view', function() {
+        const bg_color = this.get('toggle_view') ? "000" : "fff";
+        const text_color = this.get('toggle_view') ? "fff" : "000";
+        $('body').append(`<style type="text/css">body{background:#${bg_color};color:#${text_color}}</style>`);
+        return this.get('toggle_view');
+    }),
+
     actions: {
+
         /**
          * Starts/Stops the slide of GIF as stories.
          * Also pauses the GIF from display.
-         * @param {Object} - story - GIF data from  
+         * @param {String} - id - specific gif id
          */
-        stopAutoPlay( story) {
-            this.toggleProperty('carousel_pause');
-            console.log(story);
-            const control_value = this.get('carousel_pause') ? 'pause' : 'cycle';
-            $('#carouselExampleControls').carousel(control_value);
-            // const myVideo = document.getElementById('gifID'); 
-            // console.log('myVideo before');
-            // console.log(myVideo);
-            // if (myVideo.paused) {
-            //     myVideo.play(); 
-            //     $('#carouselExampleControls').carousel('cycle');
-            // } else {
-            //     myVideo.pause();
-            //     $('#carouselExampleControls').carousel('pause');
-            // }
-
-            // console.log('myVideo after');
-            // console.log(myVideo);
+        stopAutoPlay( id ) {
+            const myVideo = document.getElementById(id);
+            if ( myVideo.paused ) {
+                myVideo.play(); 
+                $('#carouselID').carousel('cycle');
+            } else {
+                myVideo.pause();
+                $('#carouselID').carousel('pause');
+            }
         }
     }
 });
