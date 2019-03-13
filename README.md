@@ -25,7 +25,7 @@ You will need the following things properly installed on your computer.
 ## Running
 
 * `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200/stories).
+* Visit your app at [http://localhost:4200/stories](http://localhost:4200/stories).
 
 
 ## Further Reading / Useful Links
